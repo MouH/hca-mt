@@ -107,9 +107,14 @@ Clustering (includes normal and hierarchical clustering)
 
 The clustering methods are mainly divided into two categories viz., partition based clustering and hierarchical clustering, based on the way they produce the results.
 
+%TODO carefully choose the notational convention and use it consistently.
+%For example: n=number of elements to cluster, d=distance metric, ...
+
 \section{Similarity Measure}
 
 Similarity measure, which is the essential part of any clustering algorithm, a brief but concrete discussion about similarity measure is conducted in this section.
+
+%TODO: include properties of distance metrics, especially triangle inequality.
 
 \section{Partial Clustering}
 
@@ -158,6 +163,8 @@ show the basic single  average linkage algorithm by naive code.
 
 \chapter{Approximate Hierarchical Clustering Algorithm}
 
+%TODO : make sure you rewrite things if you borrow from the previous article.
+
 As discussed in the previous chapter, the time complexity of a traditional accurate hierarchical clustering algorithm is $O(n^3)$. However, the datasets size of today's application domain has dramatically increased. Conducting a traditional agglomerative hierarchical clustering on such dataset would not be proper for an expected running time.
 
 To handle the scaling challenge, researchers found two approaches. At fist, researchers are focused on how to find faster algorithms which generate the same hierarchical tree as the original algorithm. The hardworking of the first approach came to its limit, when dataset scale becomes even lager. The later contribution turns to find a approximate hierarchical clustering algorithm, which is not consistency to but closely resembles the exact algorithms. 
@@ -196,9 +203,13 @@ To perform a $l-AL$ algorithm, firstly, a set of leaders should be chose, and a 
 	\end{algorithmic}
 \end{algorithm}
 
+%TODO : add citation to another paper which uses tradiutional leaders.
+
 A traditional way of finding leaders is shown in Algorithm\ref{alg:selectLeader}. The size of leaders is determined by the dataset itself and also largely on the parameter $\tau$. The time complexity is $O(mn)$.
 
 In the article by Patra et al.~\cite{patra2010distance}, the author introduced a more efficient way to compute the leaders. An algorithm called $Accelerating Leaders$ is proposed, which take the use of triangle inequality property and reduce the iteration when computing leaders. The detail of this $Accelerating Leaders$ algorithm is not mentioned here, as it is not the essential part of this paper, one can easily refer to the paper.
+%TODO: no, I think you should reproduce it. 
+
 
 The $l$-AL algorithm is based on the leader selection and average linkage to perform the clustering. 
 Algorithm \ref*{alg:lal} shows how to perform the $l$-AL, with a time complexity $O(mn + m^2)$ = $O(mn)$ and a space complexity $O(m^2)$.
@@ -214,6 +225,7 @@ However, for larger datasets, the members of each leader is also big, which will
 	\begin{algorithmic}[1]
 		\Procedure{$l$-AL}{$D$, $\tau$, $h$}
 		\State Apply leader selection algorithm \ref{alg:selectLeader} on $D$, get a map $leadersMap$, get keys out from $leadersMap$ as $L$.
+%TODO write this as a function call: LEADERSELECT(D, \tau)
 		\State Apply average linkage algorithm AL($L$, $h$), to get a hierarchical cluster $HC$.
 		\State Replace each leader in $HC$ with a set of nodes in $leadersMap$
 		\State Thus, $HC$ becomes a sequence of clustering dataset $result$
@@ -224,7 +236,7 @@ However, for larger datasets, the members of each leader is also big, which will
 	\end{algorithmic}
 \end{algorithm}
 
-
+%TODO You can include an illustration as well, perhaps showing how leaders might be selected or a dendrogram showing the leaders
 
 \section{Algorithm by Gilpin}
 3.2 Algorithm by Gilpin et. al
