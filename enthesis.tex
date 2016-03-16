@@ -198,6 +198,33 @@ To perform a $l-AL$ algorithm, firstly, a set of leaders should be chose, and a 
 
 A traditional way of finding leaders is shown in Algorithm\ref{alg:selectLeader}. The size of leaders is determined by the dataset itself and also largely on the parameter $\tau$. The time complexity is $O(mn)$.
 
+In the article by Patra et al.~\cite{patra2010distance}, the author introduced a more efficient way to compute the leaders. An algorithm called $Accelerating Leaders$ is proposed, which take the use of triangle inequality property and reduce the iteration when computing leaders. The detail of this $Accelerating Leaders$ algorithm is not mentioned here, as it is not the essential part of this paper, one can easily refer to the paper.
+
+The $l$-AL algorithm is based on the leader selection and average linkage to perform the clustering. 
+Algorithm \ref*{alg:lal} shows how to perform the $l$-AL, with a time complexity $O(mn + m^2)$ = $O(mn)$ and a space complexity $O(m^2)$.
+Compared to the traditional AL algorithm, $l$-AL algorithm does not perform the hierarchy clustering method on the whole dataset, which reduce the computation pressure. 
+As the author discussed about, the $l$-AL may overestimate or underestimate the distance between different clusters.
+However, for larger datasets, the members of each leader is also big, which will make the members will distributed.
+
+
+\algrenewcommand\Return{\State \algorithmicreturn{} }
+\begin{algorithm}[h]
+	\caption{$l$-AL}
+	\label{alg:lal}
+	\begin{algorithmic}[1]
+		\Procedure{$l$-AL}{$D$, $\tau$, $h$}
+		\State Apply leader selection algorithm \ref{alg:selectLeader} on $D$, get a map $leadersMap$, get keys out from $leadersMap$ as $L$.
+		\State Apply average linkage algorithm AL($L$, $h$), to get a hierarchical cluster $HC$.
+		\State Replace each leader in $HC$ with a set of nodes in $leadersMap$
+		\State Thus, $HC$ becomes a sequence of clustering dataset $result$
+		\Return $result$
+		\EndProcedure
+		
+		This algorithm takes three inputs, a raw dataset $D$, two tuning parameters, $tau$ and $h$.
+	\end{algorithmic}
+\end{algorithm}
+
+
 
 \section{Algorithm by Gilpin}
 3.2 Algorithm by Gilpin et. al
