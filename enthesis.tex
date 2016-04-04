@@ -28,8 +28,10 @@
 % NOTE: This must be the last \usepackage in the whole document!
 \usepackage[bookmarksopen,bookmarksnumbered,linktocpage]{hyperref}
 
-\addbibresource{malliopas.bib} % The file name of your bibliography database
+\DeclareGraphicsExtensions{.png,.pdf,.jpg}
 
+\addbibresource{malliopas.bib} % The file name of your bibliography database
+\bibliography{malliopas} {}
 
 \begin{document}
 
@@ -118,7 +120,7 @@ The main contributions of this thesis are a thorough survey of clustering data m
 
 Clustering, as the name suggests, is a method to divide similar objects into different groups. Each group, or says cluster, is made up by similar objects, and objects in different groups should be dissimilar. In machine learning point of view, clustering algorithms is unsupervised learning, which is used to find hidden patterns in data with unlabeled data. Unlike classification problems take use of the third part judgement about the data (labeled data), clustering analysis groups objects based only on the pattern and relationships of the raw data. 
 
-As Dongkuan et al.~ \cite{xu2015comprehensive} pointed out, the standard process of clustering is usually divided into the following steps, and this thesis mainly focus on the algorithm itself, feature engineering and practical usage is not covered in detail.
+As Dongkuan et al. ~\cite{xu2015comprehensive} pointed out, the standard process of clustering is usually divided into the following steps, and this thesis mainly focus on the algorithm itself, feature engineering and practical usage is not covered in detail.
 
 \begin{itemize}
 	\item Feature extraction, a set of parameter, or features generated from the original data to represent the objects.
@@ -130,9 +132,6 @@ As Dongkuan et al.~ \cite{xu2015comprehensive} pointed out, the standard process
 The clustering methods are mainly divided into two categories viz., partition based clustering and hierarchical clustering, based on the way they produce the results. Partitioning based algorithms produce clusters directly, which means they try to find clusters by iteration to relocate objects into subsets. On the other hand, hierarchical clustering algorithms build clusters gradually, and hierarchical clustering is subdivided into agglomerative and divisive.
 
 As shown above, clustering algorithm is about make the similar objects into one group, the definition of similar between objects is vital when discussion about clustering algorithm. This chapter will first illustrate the idea of similarity measure, and followed by a discussion about different genres of clustering algorithms in a row.
-
-%TODO carefully choose the notational convention and use it consistently.
-%For example: n=number of elements to cluster, d=distance metric, ...
 
 \section{Similarity Measure}
 
@@ -180,7 +179,6 @@ A critical property of distance measure is triangle inequality, which means, for
 
 The three distance measure mentioned above, the euclidean distance \ref{def:euclidean_distance} and jaccard distance \ref*{def:jaccard_distance} is naturally obey the triangle inequality feature, while the cosine distance \ref*{def:cosine_distance} violate it, and should be converted into angular distance to support this feature.
 
-%TODO: include properties of distance metrics, especially triangle inequality.
 
 \section{Partial Clustering}
 
@@ -221,6 +219,14 @@ The $K-means$ algorithm works well with numerical attributes, due to the distanc
 	\]
 \end{definition}
 
+\begin{figure}
+	\centering
+	\includegraphics[width=0.80\textwidth]{pic/kmeans.png}
+	\caption{An example result for K-means algorithm.}
+	\label{fig:kmeans}
+\end{figure}
+
+An example result for $K-means$ algorithm is show in figure \ref{alg:kmeans}. The final clusters is divided by the centroids.
 When performing the $K-means$ algorithm, one can experiment with different value of $k$, and draw a graph about the size of $k$ and the $L_2$-norm value. One can expect that, when first increase the $k$ value, the $L_2$-norm value would decrease sharply, and after some bigger $k$, the $L_2$-norm would stop or decrease with a small slope. And turning point is usually chose as a good $k$ value.
 
 $K-means$ algorithm is simple and straightforward. However its also has some drawbacks,
@@ -235,34 +241,41 @@ $K-means$ algorithm is simple and straightforward. However its also has some dra
 
 The distance based method is sensitive to outliers, to overcome this, research also invented density-based partition. In density-based partition, clusters are define as a connected group and is able to make up the clusters in arbitrary shape. Due to this property, density-based partition clustering algorithm does not influence by the outliers.
 
-%TODO discuss about density based algorithm in detail.
+%TODO or not discuss about density based algorithm in detail.
 
 \section{Hierarchical Clustering Algorithm}
 
-discuss about the basic idea of hierarchical clustering algorithm.
-discuss the usage of HCA
-show the basic single  average linkage algorithm by naive code.
+Hierarchical clustering is developed to build a cluster hierarchy, meaning, a cluster tree, people may refer it as $dendrogram$. An example of dendrogram is shown in figure \ref{fig:a_dendrogram}. Not like partition based clustering, the $dendrogram$ made by hierarchical clustering can be cut at any stage, thus enable researchers explore the data in different levels. Hierarchical clustering methods can be divided into two aspects, agglomerative and divisive. The agglomerative way, or called the bottom-up method, created the $dendrogram$ by iteratively join the most similar two object into one. And the divisive method treats the whole dataset as one object, and recursively divide the object into pieces.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.80\textwidth]{pic/dendrogram.png}
+	\caption{An example of a dendrogram.}
+	\label{fig:a_dendrogram}
+\end{figure}
+
+The following part illustrates the essential component of Agglomerative Hierarchical Clustering(AHC). The naive AHC algorithm starts with treating every point in the dataset as individual cluster, and repeated merge the closest objects into one, until there is only on big component left. Algorithm \ref{alg:primitiveHAC} shows the primitive AHC algorithm.
 
 \algrenewcommand\Return{\State \algorithmicreturn{} }% http://tex.stackexchange.com/questions/69449/avoid-putting-statements-on-the-same-line-with-algorithmicx
 \begin{algorithm}[h]
 	\caption{Primitive AHC algorithm}
 	\label{alg:primitiveHAC}
 	\begin{algorithmic}[1]
-		\Procedure{primitive AHC}{s,d}
+		\Procedure{primitive AHC}{s,D}
 		
 		\State $S_{origin} \leftarrow S$
 		\State $n \leftarrow \lvert S \rvert$
 		\State $den \leftarrow \left[\right]$
 		\State $size[x] \leftarrow 1, $ for all $x \in S$
 		\For{$i \leftarrow 0, \dots , n - 2 $}
-		\State $(I,J) = argmin_{(SxS)\setminus \Delta} d$
+		\State $(I,J) = argmin_{(SxS)\setminus \Delta} D$
 		\State append (I,J) to den
 		\State $S \leftarrow S \setminus \left\{I,J\right\} $
 		\State Create a new label $L$, $L \notin S \cup S_{origin}$
 		\State \begin{varwidth}[t]{\linewidth}
 			Update the matrix containing the distances
-			\par\hskip\algorithmicindent $d[L,x] = d[x,L] = \text{FORMULA} ( d[I,x], d[b,J],$ 
-			\par\hskip\algorithmicindent $d[I,J], size[I], size[J]) $,  for all $x \in S$
+			\par\hskip\algorithmicindent $D[L,x] = D[x,L] = \text{FORMULA} ( D[I,x], D[b,J],$ 
+			\par\hskip\algorithmicindent $D[I,J], size[I], size[J]) $,  for all $x \in S$
 		\end{varwidth}
 		\State $size[L] \leftarrow size[I] + size[J]$
 		\State $S \leftarrow S \cup \left\{L\right\}$
@@ -274,6 +287,37 @@ show the basic single  average linkage algorithm by naive code.
 		The $\text{FORMULA}$ is the updating formula used for the chosen linkage, while $d$ is the distance metric. Note that our notation somewhat freely uses $I$ and $J$ to mean either the label of the cluster or the cluster itself.
 	\end{algorithmic}
 \end{algorithm}
+
+The formula for updating the distance is usually selected between single, complete, average, weighted, Ward, centroid and median linkage(details in \cite{mullner2012fastcluster}). Average distance is described below:
+
+\begin{definition}[Average distance]
+	\label{def:average_distance}
+	Given a distance measure $D$, the average distance, $Average_D$, for cluster $A$ and $B$ is defined as
+	\[
+	D_A \left(A, B \right) = \frac{
+			\sum\limits_{i=1}^{\lvert  A\rvert } \sum\limits_{j=1} \lvert B \lvert D \left(A_i, B_j \right)		
+		}{
+			\lvert A \lvert	\lvert B \lvert
+		}
+	\]
+\end{definition}
+
+
+\begin{definition}[Average Updating Formula]
+	\label{def:average_updating}
+	Given that cluster $A$ and $B$ join together, the distance between any other cluster $M$ to the joined cluster could be update as
+	\[
+	\frac{
+		n_{A,M} D_A \left( A, B \right) + n_{B,M} D_A \left( B, M \right)
+		}{
+		n_{A, M} + n_{B,M}
+		}
+\]
+\end{definition}
+
+
+Despite the advantages that, AHC can apply to any distance measure and suit any type of attribute type, when facing big data problem, the time complexity, $O(n^3)$, makes it impossible to finish compute.
+
 
 \chapter{Approximate Hierarchical Clustering Algorithm}
 
@@ -289,13 +333,13 @@ This chapter will mainly discuss the current research in the approximate hierarc
 
 Before the discussion of the approximate algorithms, an brief illustration about the difficulty of experiment and comparison of such approximate hierarchical clustering algorithms.
 
-%TODO
+%TODO this part could refer to the covernote
 
 \section{Algorithm by Patra}
 
 Patra et al.~\cite{patra2010distance}  proposed a method, l-AL for AHC to deal with large dadtasets problem with average linkage. In their work, a set of leaders are proposed to represent the whole datasets, which are then applied the standard average link method. The advantage is that this method works for any distance metric, and reduces the running complexity as it is not requested to store the whole  dataset in to memory, only the leaders are retained. 
 
-To perform a $l-AL$ algorithm, firstly, a set of leaders should be chose, and a standard average linkage method will be implement inside each group. The average linkage method has been discussed in the previous chapter. The focus below will be mainly about the way they used to choose leaders from the origin dataset.
+To perform a $l-AL$ algorithm \cite{hartigan1975clustering}, firstly, a set of leaders should be chose, and a standard average linkage method will be implement inside each group. The average linkage method has been discussed in the previous chapter. The focus below will be mainly about the way they used to choose leaders from the origin dataset.
 
 \algrenewcommand\Return{\State \algorithmicreturn{} }
 \begin{algorithm}[h]
@@ -303,7 +347,7 @@ To perform a $l-AL$ algorithm, firstly, a set of leaders should be chose, and a 
 	\label{alg:selectLeader}
 	\begin{algorithmic}[1]
 		\Procedure{leaderSelect}{dataset, $\tau$}
-		\State $leaders \leftarrow empty hash map of node and set of nodes$
+		\State leaders $\leftarrow$ empty hash map of node and set of nodes
 		\For{$i \leftarrow dataset$}
 			\State \text{IF}  exists a $l$ in $leaders$, and $ || l - i || < \tau $
 			\State \hskip\algorithmicindent put current node $i$ into the set in $leaders$ with key $i$.
@@ -316,8 +360,6 @@ To perform a $l-AL$ algorithm, firstly, a set of leaders should be chose, and a 
 	This algorithm takes two input, one is the whole dataset which is used in the hierarchical clustering, the other one is a tolerante value $\tau$. The return value is the chosen leaders with their attached nodes.
 	\end{algorithmic}
 \end{algorithm}
-
-%TODO : add citation to another paper which uses tradiutional leaders.
 
 A traditional way of finding leaders is shown in Algorithm\ref{alg:selectLeader}. The size of leaders is determined by the dataset itself and also largely on the parameter $\tau$. The time complexity is $O(mn)$.
 
@@ -337,16 +379,15 @@ However, for larger datasets, the members of each leader is also big, which will
 	\caption{$l$-AL}
 	\label{alg:lal}
 	\begin{algorithmic}[1]
-		\Procedure{$l$-AL}{$D$, $\tau$, $h$}
-		\State Apply leader selection algorithm \ref{alg:selectLeader} on $D$, get a map $leadersMap$, get keys out from $leadersMap$ as $L$.
-%TODO write this as a function call: LEADERSELECT(D, \tau)
+		\Procedure{$l$-AL}{$s$, $\tau$, $h$}
+		\State Apply leader selection algorithm \ref{alg:selectLeader} on $s$, get a map $leadersMap$, get keys out from $leadersMap$ as $L$.
 		\State Apply average linkage algorithm AL($L$, $h$), to get a hierarchical cluster $HC$.
 		\State Replace each leader in $HC$ with a set of nodes in $leadersMap$
 		\State Thus, $HC$ becomes a sequence of clustering dataset $result$
 		\Return $result$
 		\EndProcedure
 		
-		This algorithm takes three inputs, a raw dataset $D$, two tuning parameters, $tau$ and $h$.
+		This algorithm takes three inputs, a raw dataset $s$, two tuning parameters, $tau$ and $h$.
 	\end{algorithmic}
 \end{algorithm}
 
