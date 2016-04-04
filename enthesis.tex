@@ -111,14 +111,20 @@ Data analysis has become the fundamental skill for modern science research acros
 
 The following of this thesis consists of a discussion about general clustering concept, the traditional genre of different clustering algorithms, a detailed comparison of approximate algorithms about hierarchical clustering algorithms and in the end, a paper in this topic  published in the SIGMOD(2015) attached.
 
-The main contributions of this thesis are a thorough survey of clustering data mining techniques and introduces a state of art algorithm about hierarchical clustering algorithm.
+The main contributions of this thesis are a thorough survey of clustering data mining techniques 
+%MC this is not true: this is not a thorough survey of clustering.
+and introduces a state of art algorithm about hierarchical clustering algorithm.
+%MC this is true, at least these which work for average distance. There are other (for single linkage) which are for now not included. If you have time and energy, these can be included as well for completeness.
 
 
 \chapter{Clustering}
 
 % Clustering (includes normal and hierarchical clustering)
 
-Clustering, as the name suggests, is a method to divide similar objects into different groups. Each group, or says cluster, is made up by similar objects, and objects in different groups should be dissimilar. In machine learning point of view, clustering algorithms is unsupervised learning, which is used to find hidden patterns in data with unlabeled data. Unlike classification problems take use of the third part judgement about the data (labeled data), clustering analysis groups objects based only on the pattern and relationships of the raw data. 
+Clustering, as the name suggests, is a method to divide similar objects into different groups. 
+%MC write things carefully: what is written here does not mean what you think. What you are saying is that if A and B are similar, then clustering will place them in different groups.
+Each group, or says cluster, is made up by similar objects, and objects in different groups should be dissimilar. In machine learning point of view, clustering algorithms is unsupervised learning, which is used to find hidden patterns in data with unlabeled data. Unlike classification problems take use of the third part judgement about the data (labeled data), clustering analysis groups objects based only on the pattern and relationships of the raw data. 
+%MC a bit more discussion on unsupervised vs. supervised. Preferable with an example.
 
 As Dongkuan et al. ~\cite{xu2015comprehensive} pointed out, the standard process of clustering is usually divided into the following steps, and this thesis mainly focus on the algorithm itself, feature engineering and practical usage is not covered in detail.
 
@@ -130,6 +136,7 @@ As Dongkuan et al. ~\cite{xu2015comprehensive} pointed out, the standard process
 \end{itemize}
 
 The clustering methods are mainly divided into two categories viz., partition based clustering and hierarchical clustering, based on the way they produce the results. Partitioning based algorithms produce clusters directly, which means they try to find clusters by iteration to relocate objects into subsets. On the other hand, hierarchical clustering algorithms build clusters gradually, and hierarchical clustering is subdivided into agglomerative and divisive.
+%MC stress the different in outcome for these categories: dendrogram vs. partition
 
 As shown above, clustering algorithm is about make the similar objects into one group, the definition of similar between objects is vital when discussion about clustering algorithm. This chapter will first illustrate the idea of similarity measure, and followed by a discussion about different genres of clustering algorithms in a row.
 
@@ -137,7 +144,12 @@ As shown above, clustering algorithm is about make the similar objects into one 
 
 Similarity measure, which is the essential part of any clustering algorithm, a brief but concrete discussion about similarity measure is conducted in this section.
 
-Similarity measure or distance metrics is the measure of relationship of different objects. The Choosing of distance metrics may greatly affect the clustering result. A list of popular similarity definitions will be shown in the following part.
+Similarity measure or distance metrics is the measure of relationship of different objects. 
+%MC explain the difference between these two terms + give a definition of distance metric.
+The Choosing of distance metrics may greatly affect the clustering result. A list of popular similarity definitions will be shown in the following part.
+
+
+%MC in the definitions you use "objects have the same categories of features". From reading your text I have no idea what cateories of features are.
 
 \begin{definition}[Jaccard Distance]
 	\label{def:jaccard_distance}
@@ -171,21 +183,29 @@ Similarity measure or distance metrics is the measure of relationship of differe
 	\]
 \end{definition}
 
+%MC what you are defining here is the cosine distance. (i.e. 1-cosine of the angle), what is used in the paper is angular distance (i.e., the angle between the vectors) see also the wikipedia article, it has some notes on the confusion between the two.
+
+
 Besides the distance metrics discussed above, a lot more possible options are also available, such as, Hamming Distance, Pearson Correlation Distance, Minkowski Distance et.al. 
+%MC only use et al. for lists of authors, use etc. However, in this sentence, since you use "such as", you should not add "etc.". "such as" indicates the incompleteness of the list already. So, make it:
+%MC Besides the distance metrics discussed above, many other options are available such as, the Hamming Distance, the Pearson Correlation Distance, and the Minkowski Distance. 
 
 While there are no golden standard for choosing distance metrics, practical usage of distance measure is often conducted via experiment.
 
 A critical property of distance measure is triangle inequality, which means, for three different objects with three distance for each pair, the sum of any two distance must be greater than or equal to the remaining one.
 
+%MC use the cleveref package by writing \cref{def:euclidean_distance} . On the other hand, I would not use a reference here since we are still in the same section. 
 The three distance measure mentioned above, the euclidean distance \ref{def:euclidean_distance} and jaccard distance \ref*{def:jaccard_distance} is naturally obey the triangle inequality feature, while the cosine distance \ref*{def:cosine_distance} violate it, and should be converted into angular distance to support this feature.
-
+%MC a reader will not ask what this triangle ineq. might be.
 
 \section{Partial Clustering}
+%MC where did you get this title from? Is it called like this somewhere? Haven't seen it before. You might want to change it to flat clustering or partitioning.
 
 Partitioning Based Clustering can be treated as divide data into several subsets, which consists of a iteration process based on some greedy heuristic strategy. This method can further divided into distance based and density based.
 
 For distance based clustering, the algorithms relocate object into cluster based on distance measure. The most famous algorithm is $K-means$. $K-mneas$ algorithm, as the name shows, representing each cluster $k_i$ by the mean value of the points in the cluster. The $K-means$ is shown in \ref*{alg:kmeans}.
 
+%MC you must give a reference for this algorithm. There are many versions of K-means and you have to tell where you found this particular one.
 \algrenewcommand\Return{\State \algorithmicreturn{} }% 
 \begin{algorithm}[h]
 	\caption{K - means}
@@ -211,6 +231,9 @@ For distance based clustering, the algorithms relocate object into cluster based
 
 The $K-means$ algorithm works well with numerical attributes, due to the distance computation of its logic, while not suitable when come up with categorical attributes. As shown, $K-means$ algorithm should be provided with a human chose parameter $k$. A good $k$, is usually selected by $L-2$-norm objective function, the sum of the squares of errors of the centroids and the points in each cluster \ref{def:k-meanobjects}.
 
+%MC perhaps you could also explain here that k-means is only suitable for spherical clusters.
+
+
 \begin{definition}[$L_2$-norm objective function for $k-means$]
 	\label{def:k-meanobjects}
 	Given the final $Clusters_j$ for $j$ in 1 to $k$, centroid points, $K_j$ in each $Cluster_j$, and points, $p_{ij}$ in each $Cluster_j$
@@ -226,17 +249,21 @@ The $K-means$ algorithm works well with numerical attributes, due to the distanc
 	\label{fig:kmeans}
 \end{figure}
 
+%MC I suppose you made your own example. Shortly explain how the data was generated (for exaple: randomly sampled from a multivariate normal distribution, ...) You can also explain why k-means works so well in this case.
+
 An example result for $K-means$ algorithm is show in figure \ref{alg:kmeans}. The final clusters is divided by the centroids.
 When performing the $K-means$ algorithm, one can experiment with different value of $k$, and draw a graph about the size of $k$ and the $L_2$-norm value. One can expect that, when first increase the $k$ value, the $L_2$-norm value would decrease sharply, and after some bigger $k$, the $L_2$-norm would stop or decrease with a small slope. And turning point is usually chose as a good $k$ value.
 
 $K-means$ algorithm is simple and straightforward. However its also has some drawbacks,
 
+%MC either explain these points further in-line, preferably with references. Or explain them above.
 \begin{itemize}
 	\item The final result is heavily based on the initial centroid points
 	\item May come up with local optimum value
 	\item Sensitive to outliers
 	\item Not suitable for big data
 	\item Not apply to categorical data
+	%MC only spherical clusters
 \end{itemize}
 
 The distance based method is sensitive to outliers, to overcome this, research also invented density-based partition. In density-based partition, clusters are define as a connected group and is able to make up the clusters in arbitrary shape. Due to this property, density-based partition clustering algorithm does not influence by the outliers.
@@ -302,8 +329,10 @@ The formula for updating the distance is usually selected between single, comple
 	\]
 \end{definition}
 
+%MC include one more linkage strategy. Preferable one with different characteristics like Median or weighted
 
 \begin{definition}[Average Updating Formula]
+%MC define all used symbols
 	\label{def:average_updating}
 	Given that cluster $A$ and $B$ join together, the distance between any other cluster $M$ to the joined cluster could be update as
 	\[
@@ -317,15 +346,20 @@ The formula for updating the distance is usually selected between single, comple
 
 
 Despite the advantages that, AHC can apply to any distance measure and suit any type of attribute type, when facing big data problem, the time complexity, $O(n^3)$, makes it impossible to finish compute.
+%MC be very precise: $O(n^3)$ is for the naive algorithms. Better algorithms exist and you should use their characteristics when making this kind of statements.
 
 
 \chapter{Approximate Hierarchical Clustering Algorithm}
 
 %TODO : make sure you rewrite things if you borrow from the previous article.
 
-As discussed in the previous chapter, the time complexity of a traditional accurate hierarchical clustering algorithm is $O(n^3)$. However, the datasets size of today's application domain has dramatically increased. Conducting a traditional agglomerative hierarchical clustering on such dataset would not be proper for an expected running time.
+As discussed in the previous chapter, the time complexity of a traditional accurate hierarchical clustering algorithm is $O(n^3)$. 
+%MC same comment as above.
+However, the datasets size of today's application domain has dramatically increased. Conducting a traditional agglomerative hierarchical clustering on such dataset would not be proper for an expected running time.
 
-To handle the scaling challenge, researchers found two approaches. At fist, researchers are focused on how to find faster algorithms which generate the same hierarchical tree as the original algorithm. The hardworking of the first approach came to its limit, when dataset scale becomes even lager. The later contribution turns to find a approximate hierarchical clustering algorithm, which is not consistency to but closely resembles the exact algorithms. 
+To handle the scaling challenge, researchers found two approaches. At fist, researchers are focused on how to find faster algorithms which generate the same hierarchical tree as the original algorithm. The hardworking of the first approach came to its limit
+%MC what is that limit?
+, when dataset scale becomes even lager. The later contribution turns to find a approximate hierarchical clustering algorithm, which is not consistency to but closely resembles the exact algorithms. 
 
 This chapter will mainly discuss the current research in the approximate hierarchical clustering algorithms. 
 
