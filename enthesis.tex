@@ -3,6 +3,7 @@
 %\documentclass[utf8,bachelor,english]{gradu3}
 
 \usepackage{booktabs} % good for beautiful tables
+\usepackage{pdfpages}
 \usepackage{todonotes}
 \usepackage{url}
 \usepackage{algorithm}
@@ -22,11 +23,12 @@
 \usepackage{cleveref}
 \usepackage{varwidth}
 \usepackage{enumitem}
+\usepackage[bookmarksopen,bookmarksnumbered,linktocpage]{hyperref}
 
 
 
 % NOTE: This must be the last \usepackage in the whole document!
-\usepackage[bookmarksopen,bookmarksnumbered,linktocpage]{hyperref}
+
 
 \DeclareGraphicsExtensions{.png,.pdf,.jpg}
 
@@ -351,8 +353,6 @@ Despite the advantages that, AHC can apply to any distance measure and suit any 
 
 \chapter{Approximate Hierarchical Clustering Algorithm}
 
-%TODO : make sure you rewrite things if you borrow from the previous article.
-
 As discussed in the previous chapter, the time complexity of a traditional accurate hierarchical clustering algorithm is $O(n^3)$. 
 %MC same comment as above.
 However, the datasets size of today's application domain has dramatically increased. Conducting a traditional agglomerative hierarchical clustering on such dataset would not be proper for an expected running time.
@@ -441,6 +441,11 @@ However, for larger datasets, the members of each leader is also big, which will
 \chapter{Conclusion}
 
 \printbibliography
+
+\includepdf[pages={-}]{twister_tries_reproducible.pdf}
+
+
+
 
 \appendix
 
