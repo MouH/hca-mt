@@ -3,6 +3,7 @@
 %\documentclass[utf8,bachelor,english]{gradu3}
 
 \usepackage{booktabs} % good for beautiful tables
+\usepackage{pdfpages}
 \usepackage{todonotes}
 \usepackage{url}
 \usepackage{algorithm}
@@ -22,11 +23,12 @@
 \usepackage{cleveref}
 \usepackage{varwidth}
 \usepackage{enumitem}
+\usepackage[bookmarksopen,bookmarksnumbered,linktocpage]{hyperref}
 
 
 
 % NOTE: This must be the last \usepackage in the whole document!
-\usepackage[bookmarksopen,bookmarksnumbered,linktocpage]{hyperref}
+
 
 \DeclareGraphicsExtensions{.png,.pdf,.jpg}
 
@@ -405,6 +407,11 @@ However, for larger datasets, the members of each leader is also big, which will
 \chapter{Conclusion}
 
 \printbibliography
+
+\includepdf[pages={-}]{twister_tries_reproducible.pdf}
+
+
+
 
 \appendix
 
